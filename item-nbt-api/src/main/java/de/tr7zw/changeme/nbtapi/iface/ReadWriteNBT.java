@@ -203,7 +203,7 @@ public interface ReadWriteNBT extends ReadableNBT {
 
     @Override
     ReadWriteNBTCompoundList getCompoundList(String name);
-    
+
     @Override
     @Nullable
     ReadWriteNBT resolveCompound(String key);

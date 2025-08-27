@@ -13,25 +13,39 @@ public class ComponentsTest implements Test {
 
     @Override
     public void test() throws Exception {
-        if(!MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
+        if (!MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
             return;
+
         }
+
         ItemStack item = new ItemStack(Material.STICK);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("test");
         item.setItemMeta(meta);
         String comp = NBT.modifyComponents(item, n -> {
-           return n.toString();
+
+            return n.toString();
+
         });
-        if(!comp.contains("test")) {
+        if (!comp.contains("test")) {
+
             throw new NbtApiException("ReadComponent didn't work!");
+
         }
+
         NBT.modifyComponents(item, nbt -> {
+
             nbt.setString("minecraft:custom_name", "{\"extra\":[\"foobar\"],\"text\":\"\"}");
+
         });
-        if(!item.getItemMeta().getDisplayName().equals("foobar")) {
+        if (!item.getItemMeta().getDisplayName().equals("foobar")) {
+
             throw new NbtApiException("ModifyComponent didn't work!");
+
         }
+
     }
 
 }

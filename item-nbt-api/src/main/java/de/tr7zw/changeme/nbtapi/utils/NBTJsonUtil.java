@@ -25,7 +25,9 @@ public class NBTJsonUtil {
      */
     @SuppressWarnings("unchecked")
     public static JsonElement itemStackToJson(ItemStack itemStack) {
+
         try {
+
             Codec<Object> itemStackCodec = (Codec<Object>) ClassWrapper.NMS_ITEMSTACK.getClazz()
                     .getField(MojangToMapping.getMapping().get("net.minecraft.world.item.ItemStack#CODEC")).get(null);
             Object stack = ReflectionMethod.ITEMSTACK_NMSCOPY.run(null, itemStack);
@@ -33,9 +35,13 @@ public class NBTJsonUtil {
                     JsonOps.INSTANCE.emptyMap());
             Optional<JsonElement> opt = (Optional<JsonElement>) result.getClass().getMethod("result").invoke(result);
             return opt.orElse(null);
+
         } catch (Exception ex) {
+
             throw new NbtApiException("Error trying to get Json of an ItemStack.", ex);
+
         }
+
     }
 
 }

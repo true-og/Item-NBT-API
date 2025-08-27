@@ -24,8 +24,10 @@ public class NBTContainer extends NBTCompound {
      */
     @Deprecated
     public NBTContainer() {
+
         super(null, null);
         nbt = ObjectCreator.NMS_NBTTAGCOMPOUND.getInstance();
+
     }
 
     /**
@@ -36,14 +38,22 @@ public class NBTContainer extends NBTCompound {
      */
     @Deprecated
     public NBTContainer(Object nbt) {
+
         super(null, null);
         if (nbt == null) {
+
             nbt = ObjectCreator.NMS_NBTTAGCOMPOUND.getInstance();
+
         }
+
         if (!ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz().isAssignableFrom(nbt.getClass())) {
+
             throw new NbtApiException("The object '" + nbt.getClass() + "' is not a valid NBT-Object!");
+
         }
+
         this.nbt = nbt;
+
     }
 
     /**
@@ -54,8 +64,10 @@ public class NBTContainer extends NBTCompound {
      */
     @Deprecated
     public NBTContainer(InputStream inputsteam) {
+
         super(null, null);
         this.nbt = NBTReflectionUtil.readNBT(inputsteam);
+
     }
 
     /**
@@ -67,44 +79,65 @@ public class NBTContainer extends NBTCompound {
      */
     @Deprecated
     public NBTContainer(String nbtString) {
+
         super(null, null);
         if (nbtString == null) {
+
             throw new NullPointerException("The String can't be null!");
+
         }
+
         try {
+
             nbt = ReflectionMethod.PARSE_NBT.run(null, nbtString);
+
         } catch (Exception ex) {
+
             throw new NbtApiException("Unable to parse Malformed Json!", ex);
+
         }
+
     }
 
     @Override
     public Object getCompound() {
+
         return nbt;
+
     }
 
     @Override
     public void setCompound(Object tag) {
+
         nbt = tag;
+
     }
 
     @Override
     protected void setClosed() {
+
         this.closed = true;
+
     }
 
     @Override
     protected boolean isClosed() {
+
         return closed;
+
     }
-    
+
     protected boolean isReadOnly() {
+
         return readOnly;
+
     }
 
     protected NBTContainer setReadOnly(boolean readOnly) {
+
         this.readOnly = true;
         return this;
+
     }
 
 }

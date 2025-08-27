@@ -14,6 +14,7 @@ public class ItemJsonTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         ItemStack item = new ItemStack(Material.STONE);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("test");
@@ -21,8 +22,11 @@ public class ItemJsonTest implements Test {
         item.setItemMeta(meta);
         JsonElement elem = NBTJsonUtil.itemStackToJson(item);
         if (elem == null) {
+
             throw new NbtApiException("Getting the Json didn't work correctly! " + item);
+
         }
+
     }
 
 }

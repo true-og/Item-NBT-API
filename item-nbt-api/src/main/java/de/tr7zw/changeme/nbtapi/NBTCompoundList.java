@@ -16,7 +16,9 @@ import de.tr7zw.changeme.nbtapi.utils.nmsmappings.ReflectionMethod;
 public class NBTCompoundList extends NBTList<ReadWriteNBT> implements ReadWriteNBTCompoundList {
 
     protected NBTCompoundList(NBTCompound owner, String name, NBTType type, Object list) {
+
         super(owner, name, type, list);
+
     }
 
     /**
@@ -25,7 +27,9 @@ public class NBTCompoundList extends NBTList<ReadWriteNBT> implements ReadWriteN
      * @return The added {@link NBTListCompound}
      */
     public NBTListCompound addCompound() {
+
         return (NBTListCompound) addCompound(null);
+
     }
 
     /**
@@ -36,33 +40,55 @@ public class NBTCompoundList extends NBTList<ReadWriteNBT> implements ReadWriteN
      * @return
      */
     public NBTCompound addCompound(NBTCompound comp) {
+
         if (getParent().isReadOnly()) {
+
             throw new NbtApiException("Tried setting data in read only mode!");
+
         }
+
         try {
+
             Object compound = ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz().newInstance();
             if (MinecraftVersion.getVersion().getVersionId() >= MinecraftVersion.MC1_14_R1.getVersionId()) {
+
                 ReflectionMethod.LIST_ADD.run(listObject, size(), compound);
+
             } else {
+
                 ReflectionMethod.LEGACY_LIST_ADD.run(listObject, compound);
+
             }
+
             getParent().saveCompound();
             NBTListCompound listcomp = new NBTListCompound(this, compound);
             if (comp != null) {
+
                 listcomp.mergeCompound(comp);
+
             }
+
             return listcomp;
+
         } catch (Exception ex) {
+
             throw new NbtApiException(ex);
+
         }
+
     }
 
     @Override
     public ReadWriteNBT addCompound(ReadableNBT comp) {
+
         if (comp instanceof NBTCompound) {
+
             return addCompound((NBTCompound) comp);
+
         }
+
         return null;
+
     }
 
     /**
@@ -76,48 +102,77 @@ public class NBTCompoundList extends NBTList<ReadWriteNBT> implements ReadWriteN
     @Override
     @Deprecated
     public boolean add(ReadWriteNBT empty) {
+
         return addCompound(empty) != null;
+
     }
 
     @Override
     public void add(int index, ReadWriteNBT element) {
+
         if (element != null) {
+
             throw new NbtApiException("You need to pass null! ListCompounds from other lists won't work.");
+
         }
+
         if (getParent().isReadOnly()) {
+
             throw new NbtApiException("Tried setting data in read only mode!");
+
         }
+
         try {
+
             Object compound = ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz().newInstance();
             if (MinecraftVersion.getVersion().getVersionId() >= MinecraftVersion.MC1_14_R1.getVersionId()) {
+
                 ReflectionMethod.LIST_ADD.run(listObject, index, compound);
+
             } else {
+
                 ReflectionMethod.LEGACY_LIST_ADD.run(listObject, compound);
+
             }
+
             super.getParent().saveCompound();
+
         } catch (Exception ex) {
+
             throw new NbtApiException(ex);
+
         }
+
     }
 
     @Override
     public NBTListCompound get(int index) {
+
         try {
+
             Object compound = ReflectionMethod.LIST_GET_COMPOUND.run(listObject, index);
             return new NBTListCompound(this, compound);
+
         } catch (Exception ex) {
+
             throw new NbtApiException(ex);
+
         }
+
     }
 
     @Override
     public NBTListCompound set(int index, ReadWriteNBT element) {
+
         throw new NbtApiException("This method doesn't work in the ListCompound context.");
+
     }
 
     @Override
     protected Object asTag(ReadWriteNBT object) {
+
         return null;
+
     }
 
 }

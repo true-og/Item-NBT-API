@@ -19,6 +19,7 @@ public class Forge1710Mappings {
     private static Method crucible_toString;
 
     static {
+
         // Fields
         classMap.put("NMS_NBTBASE", "net.minecraft.nbt.NBTBase");
         classMap.put("NMS_NBTTAGSTRING", "net.minecraft.nbt.NBTTagString");
@@ -95,32 +96,47 @@ public class Forge1710Mappings {
 
         // Crucible
         try {
+
             crucible_toString = Class.forName("net.minecraft.nbt.NBTTagCompound")
                     .getDeclaredMethod("crucible_toString");
+
         } catch (Exception e) {
+
             e.printStackTrace();
+
         }
+
     }
 
     public static Map<String, String> getClassMappings() {
+
         return classMap;
+
     }
 
     public static Map<String, String> getMethodMapping() {
+
         return methodMap;
+
     }
 
     public static String toString(Object nbtTagCompound) {
+
         if (crucible_toString == null)
             throw new NbtApiException("Method not loaded! 'Forge1710Mappings.crucible_toString' ");
         try {
+
             return (String) crucible_toString.invoke(nbtTagCompound);
+
         } catch (Exception ex) {
+
             throw new NbtApiException(
                     "Error while calling the method 'crucible_toString', from Forge1710Mappings. Passed Class: "
                             + Forge1710Mappings.class,
                     ex);
+
         }
+
     }
 
 }

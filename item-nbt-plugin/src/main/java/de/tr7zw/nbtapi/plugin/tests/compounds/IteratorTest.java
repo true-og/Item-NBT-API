@@ -12,6 +12,7 @@ public class IteratorTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         NBTList<Integer> testList;
 
         testList = initIntegerList();
@@ -19,9 +20,11 @@ public class IteratorTest implements Test {
 
         testList = initIntegerList();
         testIterator(testList.listIterator());
+
     }
 
     private NBTList<Integer> initIntegerList() {
+
         NBTContainer comp = new NBTContainer();
         NBTList<Integer> list = comp.getIntegerList("test");
         list.add(1);
@@ -29,9 +32,11 @@ public class IteratorTest implements Test {
         list.add(3);
         list.add(4);
         return list;
+
     }
 
     private static void testIterator(Iterator<Integer> iterator) {
+
         assertTrue(iterator.hasNext());
         assertTrue(iterator.next() == 1);
         assertTrue(iterator.hasNext());
@@ -42,24 +47,38 @@ public class IteratorTest implements Test {
         assertTrue(iterator.hasNext());
         assertTrue(iterator.next() == 4);
         testNoMoreElements(iterator);
+
     }
 
     private static void testNoMoreElements(Iterator<Integer> iterator) {
+
         assertTrue(!iterator.hasNext());
         try {
+
             iterator.next();
+
         } catch (NoSuchElementException expected) {
+
             return;
+
         } catch (Exception e) {
+
             throw new NbtApiException("iterator threw wrong exception: " + e.toString());
+
         }
+
         throw new NbtApiException("iterator did not throw exception");
+
     }
 
     private static void assertTrue(boolean condition) {
+
         if (!condition) {
+
             throw new NbtApiException("iterator test failed");
+
         }
+
     }
 
 }

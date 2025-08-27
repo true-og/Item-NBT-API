@@ -48,7 +48,9 @@ public class ClassGenerator {
      * @throws IOException
      */
     protected static Class<?> wrapNbtClass(ClassPool classPool, Class<?> originalClass, String writeMethod,
-            String readMethod, String extraDataKey) throws NotFoundException, CannotCompileException, IOException {
+            String readMethod, String extraDataKey) throws NotFoundException, CannotCompileException, IOException
+    {
+
         classPool.insertClassPath(new LoaderClassPath(ClassGenerator.class.getClassLoader()));
 
         CtClass generated = classPool.makeClass("de.tr7zw.nbtinjector.generated." + originalClass.getSimpleName());
@@ -80,24 +82,33 @@ public class ClassGenerator {
 
         // Overwrite constructors
         for (Constructor<?> constructor : originalClass.getConstructors()) {
+
             String paramString = "";
             String paramNameString = "";
             int c = 0;
             for (Class<?> clazz : constructor.getParameterTypes()) {
+
                 if (c != 0) {
+
                     paramString += ",";
                     paramNameString += ",";
+
                 }
+
                 paramString += clazz.getName() + " param" + c;
                 paramNameString += "param" + c;
                 c++;
+
             }
+
             generated.addConstructor(CtNewConstructor.make("public " + originalClass.getSimpleName() + "(" + paramString
                     + ") {\n" + "  super(" + paramNameString + ");\n" + "}", generated));
+
         }
 
         generated.writeFile("nbtinjector_generated");
         return generated.toClass(INBTWrapper.class.getClassLoader(), INBTWrapper.class.getProtectionDomain());
+
     }
 
     /**
@@ -111,7 +122,9 @@ public class ClassGenerator {
      * @throws IOException
      */
     protected static Class<?> createEntityTypeWrapper(ClassPool classPool, Class<?> targetClass)
-            throws NotFoundException, CannotCompileException, IOException {
+            throws NotFoundException, CannotCompileException, IOException
+    {
+
         classPool.insertClassPath(new LoaderClassPath(ClassGenerator.class.getClassLoader()));
 
         CtClass generated = classPool.makeClass(GENERATOR_PACKAGE + ".entityCreator." + targetClass.getSimpleName());
@@ -127,6 +140,7 @@ public class ClassGenerator {
 
         generated.writeFile("nbtinjector_generated");
         return generated.toClass(INBTWrapper.class.getClassLoader(), INBTWrapper.class.getProtectionDomain());
+
     }
 
     /**
@@ -141,15 +155,19 @@ public class ClassGenerator {
      * @throws IOException
      */
     protected static Class<?> wrapEntity(ClassPool classPool, Class<?> originalClass, String extraDataKey)
-            throws NotFoundException, CannotCompileException, IOException {
+            throws NotFoundException, CannotCompileException, IOException
+    {
+
         String writeReturn = MinecraftVersion.getVersion().getVersionId() > MinecraftVersion.MC1_10_R1.getVersionId()
                 ? "NBTTagCompound"
                 : "void";
         String writeName = ReflectionMethod.NMS_ENTITY_GET_NBT.getMethodName();
         String readName = ReflectionMethod.NMS_ENTITY_SET_NBT.getMethodName();
         if (MinecraftVersion.getVersion().getVersionId() < MinecraftVersion.MC1_11_R1.getVersionId()) {
+
             writeName = "b";
             readName = "f";
+
         }
 
         String writeMethod = "public " + writeReturn + " " + writeName + "(NBTTagCompound compound) {\n" + "  super."
@@ -159,6 +177,7 @@ public class ClassGenerator {
         String readMethod = "public void " + readName + "(NBTTagCompound compound) {\n" + "  super." + readName
                 + "(compound);\n" + "  readExtraCompound(compound);\n" + "}";
         return wrapNbtClass(classPool, originalClass, writeMethod, readMethod, extraDataKey);
+
     }
 
     /**
@@ -173,14 +192,18 @@ public class ClassGenerator {
      * @throws IOException
      */
     protected static Class<?> wrapTileEntity(ClassPool classPool, Class<?> originalClass, String extraDataKey)
-            throws NotFoundException, CannotCompileException, IOException {
+            throws NotFoundException, CannotCompileException, IOException
+    {
+
         String writeReturn = MinecraftVersion.getVersion().getVersionId() > MinecraftVersion.MC1_9_R1.getVersionId()
                 ? "NBTTagCompound"
                 : "void";
         String writeName = ReflectionMethod.TILEENTITY_GET_NBT.getMethodName();
         String readName = ReflectionMethod.TILEENTITY_SET_NBT.getMethodName();
         if (MinecraftVersion.getVersion().getVersionId() < MinecraftVersion.MC1_16_R1.getVersionId()) {
+
             readName = ReflectionMethod.TILEENTITY_SET_NBT_LEGACY1151.getMethodName();
+
         }
 
         String writeMethod = "public " + writeReturn + " " + writeName + "(NBTTagCompound compound) {\n"
@@ -192,6 +215,7 @@ public class ClassGenerator {
                 // + " System.out.println(\"Read: \" +compound);\n"
                 + "}";
         return wrapNbtClass(classPool, originalClass, writeMethod, readMethod, extraDataKey);
+
     }
 
 }

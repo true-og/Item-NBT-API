@@ -15,29 +15,45 @@ public class EntityCustomNbtPersistentTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         if (MinecraftVersion.getVersion().getVersionId() < MinecraftVersion.MC1_14_R1.getVersionId())
             return;
         if (!Bukkit.getWorlds().isEmpty()) {
+
             World world = Bukkit.getWorlds().get(0);
             try {
+
                 if (!world.getEntitiesByClasses(Animals.class, Monster.class).isEmpty()) {
+
                     Entity ent = world.getEntitiesByClasses(Animals.class, Monster.class).iterator().next();
                     NBT.modifyPersistentData(ent, comp -> {
+
                         comp.setString("Hello", "World");
+
                     });
-                    
+
                     NBT.modifyPersistentData(ent, comp -> {
+
                         if (!comp.toString().contains("Hello:\"World\"")) {
+
                             throw new NbtApiException("Custom Data did not save to the Entity!");
+
                         }
+
                         comp.removeKey("Hello");
+
                     });
 
                 }
+
             } catch (Exception ex) {
+
                 throw new NbtApiException("Wasn't able to use NBTEntities!", ex);
+
             }
+
         }
+
     }
 
 }

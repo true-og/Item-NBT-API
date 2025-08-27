@@ -15,6 +15,7 @@ public class StreamTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         NBTContainer base = new NBTContainer();
         base.getOrCreateCompound("sub").setString("hello", "world");
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -23,13 +24,19 @@ public class StreamTest implements Test {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
         NBTContainer container = new NBTContainer(inputStream);
         if (!container.toString().equals(base.getOrCreateCompound("sub").toString())) {
+
             throw new NbtApiException("Component content did not match! " + base.getCompound("sub") + " " + container);
+
         }
+
         ItemStack item = new ItemStack(Material.STICK);
-        
+
         NBT.modify(item, nbt -> {
+
             nbt.writeCompound(outStream);
+
         });
+
     }
 
 }

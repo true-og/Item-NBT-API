@@ -14,21 +14,29 @@ public class LegacyItemTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         ItemStack item = NBT
                 .itemStackFromNBT(NBT.parseNBT("{id:cobblestone,Count:42,tag:{Enchantments:[{lvl:3,id:unbreaking}]}}"));
         if (item.getType() != Material.COBBLESTONE || item.getAmount() != 42
-                || item.getEnchantmentLevel(Enchantment.DURABILITY) != 3) {
+                || item.getEnchantmentLevel(Enchantment.DURABILITY) != 3)
+        {
+
             throw new NbtApiException("1.20 item didn't load correctly! " + item);
+
         }
-        ReadWriteNBT nbt = NBT
-                .parseNBT("{id:cobblestone,Count:42,tag:{display:{Name:\"test\"},ench:[{lvl:3,id:34}]}}");
+
+        ReadWriteNBT nbt = NBT.parseNBT("{id:cobblestone,Count:42,tag:{display:{Name:\"test\"},ench:[{lvl:3,id:34}]}}");
         nbt = DataFixerUtil.fixUpItemData(nbt, DataFixerUtil.VERSION1_12_2, DataFixerUtil.getCurrentVersion());
         item = NBT.itemStackFromNBT(nbt);
         if (item.getType() != Material.COBBLESTONE || item.getAmount() != 42
                 || item.getEnchantmentLevel(Enchantment.DURABILITY) != 3
-                || !"test".equals(item.getItemMeta().getDisplayName())) {
+                || !"test".equals(item.getItemMeta().getDisplayName()))
+        {
+
             throw new NbtApiException("1.12.2 item didn't load correctly! " + item);
+
         }
+
     }
 
 }

@@ -47,50 +47,81 @@ public class NBTInjector {
      * this method so it's class gets Wrapped.
      */
     public static void inject() {
+
         if (isInjected)
             return;
         if (MinecraftVersion.getVersion() == MinecraftVersion.MC1_7_R4
-                || MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_16_R1)) {
+                || MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_16_R1))
+        {
+
             logger.warning(
                     "[NBTINJECTOR] The NBT-Injector is not compatible with this Minecraft Version! For 1.16+ please use the persistent storage API.");
             return;
+
         }
+
         isInjected = true;
         try {
+
             ClassPool classPool = ClassPool.getDefault();
             logger.info("[NBTINJECTOR] Injecting Entity classes...");
             if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_10_R1.getVersionId()) {
+
                 InternalInjectors.entity1v10Below(classPool);
+
             } else if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_12_R1.getVersionId()) {
+
                 InternalInjectors.entity1v12Below(classPool);
+
             } else if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_13_R2.getVersionId()) {
+
                 InternalInjectors.entity1v13Below(classPool);
+
             } else { // 1.14+
+
                 InternalInjectors.entity1v14(classPool);
+
             }
 
             logger.info("[NBTINJECTOR] Injecting Tile Entity classes...");
             if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_10_R1.getVersionId()) {
+
                 InternalInjectors.tile1v10Below(classPool);
+
             } else if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_12_R1.getVersionId()) {
+
                 InternalInjectors.tile1v12Below(classPool);
+
             } else { // 1.13+
+
                 InternalInjectors.tile1v13(classPool);
+
             }
+
         } catch (Exception e) {
+
             throw new NbtApiException(e);
+
         }
+
     }
 
     public static boolean isInjected() {
+
         return isInjected;
+
     }
 
     private static NBTCompound getNbtData(Object object) {
+
         if (object instanceof INBTWrapper) {
+
             return ((INBTWrapper) object).getNbtData();
+
         }
+
         return null;
+
     }
 
     /**
@@ -111,14 +142,20 @@ public class NBTInjector {
      * @return Entity The new instance of the entity.
      */
     public static org.bukkit.entity.Entity patchEntity(org.bukkit.entity.Entity entity) {
+
         if (entity == null) {
+
             return null;
+
         }
+
         if (!isInjected)
             throw new NbtApiException(NOT_INJECTED_MESSAGE);
         try {
+
             Object ent = NBTReflectionUtil.getNMSEntity(entity);
             if (!(ent instanceof INBTWrapper)) {// Replace Entity with custom one
+
                 Object cworld = ClassWrapper.CRAFT_WORLD.getClazz().cast(entity.getWorld());
                 Object nmsworld = ReflectionMethod.CRAFT_WORLD_GET_HANDLE.run(cworld);
                 NBTContainer oldNBT = new NBTContainer(new NBTEntity(entity).getCompound());
@@ -126,14 +163,23 @@ public class NBTInjector {
                         ClassWrapper.NMS_NBTTAGCOMPOUND.getClazz(), ClassWrapper.NMS_WORLD.getClazz());
                 String id = "";
                 if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_10_R1.getVersionId()) {
+
                     id = Entity.getBackupMap().get(ent.getClass());
+
                 } else if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_12_R1.getVersionId()) {
+
                     id = ReflectionMethod.REGISTRY_GET_INVERSE.run(Entity.getRegistry(), ent.getClass()).toString();
+
                 } else if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_13_R2.getVersionId()) {
+
                     id = InternalInjectors.classToMCKey.get(ent.getClass()).toString();
+
                 } else {
+
                     id = (String) ReflectionMethod.NMS_ENTITY_GETSAVEID.run(ent);
+
                 }
+
                 oldNBT.setString("id", id);
                 oldNBT.removeKey("UUIDMost");
                 oldNBT.removeKey("UUIDLeast");
@@ -147,11 +193,17 @@ public class NBTInjector {
                 // logger.info("Created patched instance: " + newEntity.getClass().getName());
                 Method asBukkit = newEntity.getClass().getMethod("getBukkitEntity");
                 return (org.bukkit.entity.Entity) asBukkit.invoke(newEntity);
+
             }
+
         } catch (Exception e) {
+
             throw new NbtApiException("Error while patching an Entity '" + entity + "'", e);
+
         }
+
         return entity;
+
     }
 
     /**
@@ -162,20 +214,32 @@ public class NBTInjector {
      * @return NBTCompound instance
      */
     public static NBTCompound getNbtData(org.bukkit.entity.Entity entity) {
+
         if (entity == null) {
+
             return null;
+
         }
+
         if (!isInjected)
             throw new NbtApiException(NOT_INJECTED_MESSAGE);
         try {
+
             Object ent = NBTReflectionUtil.getNMSEntity(entity);
             if (!(ent instanceof INBTWrapper)) {
+
                 logger.info("Entity wasn't the correct class! '" + ent.getClass().getName() + "'");
+
             }
+
             return getNbtData(ent);
+
         } catch (Exception e) {
+
             throw new NbtApiException("Error while getting the NBT from an Entity '" + entity + "'.", e);
+
         }
+
     }
 
     /**
@@ -188,50 +252,76 @@ public class NBTInjector {
      * @return NBTCompound instance
      */
     public static NBTCompound getNbtData(org.bukkit.block.BlockState tile) {
+
         if (tile == null) {
+
             return null;
+
         }
+
         if (!isInjected)
             throw new NbtApiException(NOT_INJECTED_MESSAGE);
         try {
+
             Object pos = ObjectCreator.NMS_BLOCKPOSITION.getInstance(tile.getX(), tile.getY(), tile.getZ());
             Object cworld = ClassWrapper.CRAFT_WORLD.getClazz().cast(tile.getWorld());
             Object nmsworld = ReflectionMethod.CRAFT_WORLD_GET_HANDLE.run(cworld);
             Object tileEntity = ReflectionMethod.NMS_WORLD_GET_TILEENTITY.run(nmsworld, pos);
             if (tileEntity == null) { // Not a tile block
+
                 return null;
+
             }
+
             if (!(tileEntity instanceof INBTWrapper)) {
                 // Loading Updated Tile
 
                 Object tileEntityUpdated;
                 if (MinecraftVersion.getVersion() == MinecraftVersion.MC1_9_R1) {
+
                     tileEntityUpdated = ReflectionMethod.TILEENTITY_LOAD_LEGACY191.run(null, null,
                             new NBTTileEntity(tile).getCompound());
+
                 } else if (MinecraftVersion.getVersion() == MinecraftVersion.MC1_8_R3
-                        || MinecraftVersion.getVersion() == MinecraftVersion.MC1_9_R2) {
+                        || MinecraftVersion.getVersion() == MinecraftVersion.MC1_9_R2)
+                {
+
                     tileEntityUpdated = ReflectionMethod.TILEENTITY_LOAD_LEGACY183.run(null,
                             new NBTTileEntity(tile).getCompound());
+
                 } else if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_12_R1.getVersionId()) {
+
                     tileEntityUpdated = ReflectionMethod.TILEENTITY_LOAD_LEGACY1121.run(null, nmsworld,
                             new NBTTileEntity(tile).getCompound());
+
                 } else {
+
                     tileEntityUpdated = ReflectionMethod.TILEENTITY_LOAD.run(null,
                             new NBTTileEntity(tile).getCompound());
+
                 }
+
                 ReflectionMethod.NMS_WORLD_REMOVE_TILEENTITY.run(nmsworld, pos);
                 ReflectionMethod.NMS_WORLD_SET_TILEENTITY.run(nmsworld, pos, tileEntityUpdated);
                 return getNbtData(tileEntityUpdated);
+
             }
+
             return getNbtData(tileEntity);
+
         } catch (Exception e) {
+
             throw new NbtApiException(e);
+
         }
+
     }
 
     private static Field getAccessable(Field field) {
+
         field.setAccessible(true);
         return field;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -241,73 +331,107 @@ public class NBTInjector {
          * Hidden Constructor
          */
         private Entity() {
+
         }
 
         private static Map<Class<?>, String> backupMap = new HashMap<>();
 
         static {
+
             try {
+
                 if (MinecraftVersion.getVersion().getVersionId() <= MinecraftVersion.MC1_10_R1.getVersionId()) {
+
                     backupMap.putAll(getDMap());
+
                 }
+
             } catch (ReflectiveOperationException e) {
+
                 throw new NbtApiException(e);
+
             }
+
         }
 
         static Object getRegistry() throws ReflectiveOperationException {
+
             return getAccessable(ClassWrapper.NMS_ENTITYTYPES.getClazz().getDeclaredField("b")).get(null);
+
         }
 
         static Object getRegistryId(Object reg) throws ReflectiveOperationException {
+
             return getAccessable(reg.getClass().getDeclaredField("a")).get(reg);
+
         }
 
         static Map<Class<?>, String> getBackupMap() throws ReflectiveOperationException {
+
             return backupMap;
+
         }
 
         static Map<String, Class<?>> getCMap() throws ReflectiveOperationException {
+
             return (Map<String, Class<?>>) getAccessable(ClassWrapper.NMS_ENTITYTYPES.getClazz().getDeclaredField("c"))
                     .get(null);
+
         }
 
         static Map<Class<?>, String> getDMap() throws ReflectiveOperationException {
+
             return (Map<Class<?>, String>) getAccessable(ClassWrapper.NMS_ENTITYTYPES.getClazz().getDeclaredField("d"))
                     .get(null);
+
         }
 
         static Map<Integer, Class<?>> getEMap() throws ReflectiveOperationException {
+
             return (Map<Integer, Class<?>>) getAccessable(ClassWrapper.NMS_ENTITYTYPES.getClazz().getDeclaredField("e"))
                     .get(null);
+
         }
 
         static Map<Class<?>, Integer> getFMap() throws ReflectiveOperationException {
+
             return (Map<Class<?>, Integer>) getAccessable(ClassWrapper.NMS_ENTITYTYPES.getClazz().getDeclaredField("f"))
                     .get(null);
+
         }
+
     }
 
     @SuppressWarnings("unchecked")
     static class TileEntity {
+
         /**
          * Hidden Constructor
          */
         private TileEntity() {
+
         }
 
         static Object getRegistry() throws ReflectiveOperationException {
+
             return getAccessable(ClassWrapper.NMS_TILEENTITY.getClazz().getDeclaredField("f")).get(null);
+
         }
 
         static Map<String, Class<?>> getFMap() throws ReflectiveOperationException {
+
             return (Map<String, Class<?>>) getAccessable(ClassWrapper.NMS_TILEENTITY.getClazz().getDeclaredField("f"))
                     .get(null);
+
         }
 
         static Map<Class<?>, String> getGMap() throws ReflectiveOperationException {
+
             return (Map<Class<?>, String>) getAccessable(ClassWrapper.NMS_TILEENTITY.getClazz().getDeclaredField("g"))
                     .get(null);
+
         }
+
     }
+
 }

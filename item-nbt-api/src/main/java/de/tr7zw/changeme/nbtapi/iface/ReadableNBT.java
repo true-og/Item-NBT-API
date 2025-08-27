@@ -166,7 +166,9 @@ public interface ReadableNBT {
      * @return whether the key is set and has the specified type
      */
     default boolean hasTag(String key, NBTType type) {
+
         return hasTag(key) && getType(key) == type;
+
     }
 
     /**

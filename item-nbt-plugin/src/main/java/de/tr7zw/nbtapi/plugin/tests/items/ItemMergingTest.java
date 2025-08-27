@@ -13,9 +13,13 @@ public class ItemMergingTest implements Test {
 
     @Override
     public void test() throws Exception {
-        if(MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
             return; // skip, there is no vanilla nbt
+
         }
+
         ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta bookMeta = (BookMeta) item.getItemMeta();
         bookMeta.setAuthor("Author");
@@ -56,6 +60,7 @@ public class ItemMergingTest implements Test {
             throw new NbtApiException("Couldn't clear custom NBT tags!");
         if (!nbti.hasTag("author"))
             throw new NbtApiException("Vanilla tag was removed!");
+
     }
 
 }

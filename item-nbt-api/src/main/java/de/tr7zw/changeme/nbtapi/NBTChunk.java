@@ -10,7 +10,9 @@ public class NBTChunk {
     private final Chunk chunk;
 
     public NBTChunk(Chunk chunk) {
+
         this.chunk = chunk;
+
     }
 
     /**
@@ -20,8 +22,10 @@ public class NBTChunk {
      * @return NBTCompound containing the data of the PersistentDataAPI
      */
     public NBTCompound getPersistentDataContainer() {
+
         CheckUtil.assertAvailable(MinecraftVersion.MC1_16_R3);
         return new NBTPersistentDataContainer(chunk.getPersistentDataContainer());
+
     }
 
 }

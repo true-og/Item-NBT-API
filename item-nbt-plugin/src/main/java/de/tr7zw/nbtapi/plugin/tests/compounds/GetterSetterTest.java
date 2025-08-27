@@ -31,6 +31,7 @@ public class GetterSetterTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         ReadWriteNBT comp = NBT.createNBTObject();
 
         comp.setString(STRING_TEST_KEY, STRING_TEST_VALUE);
@@ -45,8 +46,11 @@ public class GetterSetterTest implements Test {
         comp.setByteArray(BYTEARRAY_TEST_KEY, BYTEARRAY_TEST_VALUE);
 
         if (!comp.hasTag(STRING_TEST_KEY)) {
+
             throw new NbtApiException("Wasn't able to check a key! The Item-NBT-API may not work!");
+
         }
+
         int[] intArray = comp.getIntArray(INTARRAY_TEST_KEY);
         byte[] byteArray = comp.getByteArray(BYTEARRAY_TEST_KEY);
         if (!(STRING_TEST_VALUE).equals(comp.getString(STRING_TEST_KEY))
@@ -56,9 +60,13 @@ public class GetterSetterTest implements Test {
                 || comp.getFloat(FLOAT_TEST_KEY) != FLOAT_TEST_VALUE || comp.getLong(LONG_TEST_KEY) != LONG_TEST_VALUE
                 || (intArray != null && intArray.length != (INTARRAY_TEST_VALUE).length)
                 || (byteArray != null && byteArray.length != (BYTEARRAY_TEST_VALUE).length)
-                || !comp.getBoolean(BOOLEAN_TEST_KEY).equals(BOOLEAN_TEST_VALUE)) {
+                || !comp.getBoolean(BOOLEAN_TEST_KEY).equals(BOOLEAN_TEST_VALUE))
+        {
+
             throw new NbtApiException("One key does not equal the original value! The Item-NBT-API may not work!");
+
         }
+
     }
 
 }

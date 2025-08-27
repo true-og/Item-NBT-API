@@ -10,6 +10,7 @@ public class EnumTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         ReadWriteNBT comp = NBT.createNBTObject();
         comp.setEnum("test", NBTType.NBTTagEnd);
         NBTType type = comp.getEnum("test", NBTType.class);
@@ -19,6 +20,7 @@ public class EnumTest implements Test {
         if (type != NBTType.NBTTagEnd || typeNonNull != NBTType.NBTTagEnd || typeDefaultFound != NBTType.NBTTagEnd
                 || typeDefault != NBTType.NBTTagByte)
             throw new NbtApiException("One enum did not match what it should have been!");
+
     }
 
 }

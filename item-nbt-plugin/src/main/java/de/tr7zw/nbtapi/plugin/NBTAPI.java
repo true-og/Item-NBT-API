@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.tr7zw.changeme.nbtapi.NbtApiException;
@@ -60,7 +59,9 @@ public class NBTAPI extends JavaPlugin {
     private static NBTAPI instance;
 
     public static NBTAPI getInstance() {
+
         return instance;
+
     }
 
     @Override
@@ -73,15 +74,21 @@ public class NBTAPI extends JavaPlugin {
         saveConfig();
 
         if (!getConfig().getBoolean("bStats.enabled")) {
+
             getLogger().info("bStats disabled");
             MinecraftVersion.disableBStats();
+
         }
 
         if (!getConfig().getBoolean("updateCheck.enabled")) {
+
             getLogger().info("Update check disabled");
             MinecraftVersion.disableUpdateCheck();
+
         } else {
+
             MinecraftVersion.enableUpdateCheck();
+
         }
 
         // NBTCompounds
@@ -107,23 +114,32 @@ public class NBTAPI extends JavaPlugin {
 
         // Items
         if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_8_R3)) { // 1.7.10 not a thing
+
             apiTests.add(new ItemConversionTest());
             apiTests.add(new ItemStackConversionTest());
+
         }
+
         if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
             apiTests.add(new LegacyItemTest());
             apiTests.add(new ItemJsonTest());
+
         }
+
         apiTests.add(new ComponentsTest());
         apiTests.add(new EmptyItemTest());
         apiTests.add(new SmuggleTest());
         apiTests.add(new MetaTest());
         if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_8_R3)) { // 1.7.10 not a thing
+
             apiTests.add(new ItemMergingTest());
             apiTests.add(new DirectApplyTest());
             apiTests.add(new DirectApplyMetaTest());
             apiTests.add(new NBTModifyItemTest());
+
         }
+
         // Proxies
         apiTests.add(new SimpleProxyTest());
 
@@ -151,79 +167,111 @@ public class NBTAPI extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         instance = this; // NOSONAR
         // new MetricsLite(this); The metrics moved into the API
         if (getConfig().getBoolean("silentquickstart")) {
+
             // we are silent, won't check anything or pre-init
             VersionChecker.hideOk = true;
             return;
+
         }
+
         MinecraftVersion.hasGsonSupport(); // init gson(if it hasn't already)
         getLogger().info("Checking bindings...");
         MinecraftVersion.getVersion();
 
         boolean classUnlinked = false;
         for (ClassWrapper c : ClassWrapper.values()) {
+
             if (c.isEnabled() && c.getClazz() == null) {
+
                 if (!classUnlinked)
                     getLogger().info("Classes:");
                 getLogger().warning(c.name() + " did not find it's class!");
                 compatible = false;
                 classUnlinked = true;
+
             }
+
         }
+
         if (!classUnlinked)
             getLogger().info("All Classes were able to link!");
 
         boolean methodUnlinked = false;
         for (ReflectionMethod method : ReflectionMethod.values()) {
+
             if (method.isCompatible() && !method.isLoaded()) {
+
                 if (!methodUnlinked)
                     getLogger().info("Methods:");
                 getLogger().warning(method.name() + " did not find the method!");
                 compatible = false;
                 methodUnlinked = true;
+
             }
+
         }
+
         if (!methodUnlinked)
             getLogger().info("All Methods were able to link!");
         getLogger().info("Running NBT reflection test...");
 
         Map<de.tr7zw.nbtapi.plugin.tests.Test, Exception> results = new HashMap<>();
         for (de.tr7zw.nbtapi.plugin.tests.Test test : apiTests) {
+
             try {
+
                 test.test();
                 results.put(test, null);
+
             } catch (Exception ex) {
+
                 results.put(test, ex);
                 getLogger().log(Level.WARNING, "Error during '" + test.getClass().getSimpleName() + "' test!", ex);
+
             } catch (NoSuchFieldError th) { // NOSONAR
+
                 getLogger().log(Level.SEVERE, "Servere error during '" + test.getClass().getSimpleName() + "' test!");
                 getLogger().warning(
                         "WARNING! This version of Item-NBT-API seems to be broken with your Spigot version! Canceled the other tests!");
                 throw th;
+
             }
+
         }
 
         for (Entry<de.tr7zw.nbtapi.plugin.tests.Test, Exception> entry : results.entrySet()) {
+
             if (entry.getValue() != null) {
+
                 compatible = false;
                 getLogger().info(entry.getKey().getClass().getSimpleName() + ": " + entry.getValue().getMessage());
+
             }
+
         }
 
         String checkMessage = "Plugins that don't check properly may throw Exeptions, crash or have unexpected behaviors!";
         if (compatible) {
+
             NbtApiException.confirmedBroken = false;
             getLogger().info("Success! This version of NBT-API is compatible with your server.");
+
         } else {
+
             NbtApiException.confirmedBroken = true;
             getLogger().warning(
                     "WARNING! This version of NBT-API seems to be broken with your Spigot version! " + checkMessage);
             if (MinecraftVersion.getVersion() == MinecraftVersion.MC1_7_R4) {
+
                 getLogger().warning(
                         "1.7.10 is only partally supported! Some thing will not work/are not yet avaliable in 1.7.10!");
+
             }
+
         }
 
     }
@@ -232,7 +280,9 @@ public class NBTAPI extends JavaPlugin {
      * @return True if all selfchecks succeeded
      */
     public boolean isCompatible() {
+
         return compatible;
+
     }
 
 }

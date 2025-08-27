@@ -15,6 +15,7 @@ public class ItemConversionTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         ItemStack item = new ItemStack(Material.STONE, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setLore(Lists.newArrayList("Firest Line", "Second Line"));
@@ -30,6 +31,7 @@ public class ItemConversionTest implements Test {
         cont.setItemStack("testItem", item);
         if (!item.isSimilar(cont.getItemStack("testItem")))
             throw new NbtApiException("Rebuilt item did not match the original!");
+
     }
 
 }

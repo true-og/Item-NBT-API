@@ -11,8 +11,10 @@ public interface NBTItemMeta extends NBTProxy {
 
     @Override
     default void init() {
+
         registerHandler(ReadableNBT.class, NBTHandlers.STORE_READABLE_TAG);
         registerHandler(ReadWriteNBT.class, NBTHandlers.STORE_READWRITE_TAG);
+
     }
 
     public int getCustomModelData();

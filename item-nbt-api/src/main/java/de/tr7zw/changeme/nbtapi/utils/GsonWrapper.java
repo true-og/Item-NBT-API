@@ -32,11 +32,15 @@ public class GsonWrapper {
      * @return Json, representing the Object
      */
     public static String getString(Object obj) {
+
         return gson.toJson(obj);
+
     }
 
     public static void overwriteGsonInstance(Gson replacement) {
+
         gson = replacement;
+
     }
 
     /**
@@ -47,16 +51,24 @@ public class GsonWrapper {
      * @return Object that got created, or null if the json is null
      */
     public static <T> T deserializeJson(String json, Class<T> type) {
+
         try {
+
             if (json == null) {
+
                 return null;
+
             }
 
             T obj = gson.fromJson(json, type);
             return type.cast(obj);
+
         } catch (Exception ex) {
+
             throw new NbtApiException("Error while converting json to " + type.getName(), ex);
+
         }
+
     }
 
 }

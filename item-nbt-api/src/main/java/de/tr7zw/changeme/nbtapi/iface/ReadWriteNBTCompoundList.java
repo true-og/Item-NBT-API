@@ -10,7 +10,7 @@ public interface ReadWriteNBTCompoundList extends ReadableNBTList<ReadWriteNBT> 
      * @return A new instance of the class.
      */
     ReadWriteNBT addCompound();
-    
+
     /**
      * Adds a copy of the Compound to the end of the List and returns it. When null
      * is given, a new Compound will be created

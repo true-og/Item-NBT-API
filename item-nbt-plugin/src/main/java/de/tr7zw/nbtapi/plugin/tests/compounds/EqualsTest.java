@@ -14,6 +14,7 @@ public class EqualsTest implements Test {
 
     @Override
     public void test() throws Exception {
+
         ReadWriteNBT cont = NBT.createNBTObject();
         cont.setString("hello", "world");
         cont.setInteger("theAnswer", 42);
@@ -21,6 +22,7 @@ public class EqualsTest implements Test {
         cont.getStringList("somelist").addAll(Arrays.asList("a", "b", "c"));
         ItemStack item = new ItemStack(Material.STONE);
         NBT.modify(item, nbti -> {
+
             ReadWriteNBT customData = nbti.getOrCreateCompound("customData");
             // reverse order
             customData.getOrCreateCompound("sub").setString("me", "too");
@@ -28,14 +30,19 @@ public class EqualsTest implements Test {
             customData.setString("hello", "world");
             customData.getStringList("somelist").addAll(Arrays.asList("a", "b", "c"));
             if (!customData.equals(cont)) {
+
                 throw new NbtApiException("Compounds did not match! " + customData + " " + cont);
+
             }
+
         });
 
         // empty test
 
         if (!NBT.createNBTObject().equals(NBT.createNBTObject())) {
+
             throw new NbtApiException("Two empty tags did not match!");
+
         }
 
         // not equal test
@@ -46,8 +53,11 @@ public class EqualsTest implements Test {
         part2.setString("a", "a");
         part2.setString("b", "a");
         if (part1.equals(part2)) {
+
             throw new NbtApiException("Missmatched nbt did match!");
+
         }
+
     }
 
 }

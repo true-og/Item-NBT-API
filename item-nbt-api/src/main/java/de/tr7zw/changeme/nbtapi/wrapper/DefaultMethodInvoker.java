@@ -14,13 +14,19 @@ class DefaultMethodInvoker {
     private static Method invokeDefaultMethod;
 
     static {
+
         try {
+
             invokeDefaultMethod = InvocationHandler.class.getDeclaredMethod("invokeDefault",
-                    new Class[] { Object.class, Method.class, Object[].class });
+                    new Class[]
+                    { Object.class, Method.class, Object[].class });
             invokeDefaultMethod.setAccessible(true);
+
         } catch (NoSuchMethodException | SecurityException e) {
+
             // we are in java 8, use the fallback
         }
+
     }
 
     /**
@@ -32,24 +38,38 @@ class DefaultMethodInvoker {
      * @return
      */
     public static Object invokeDefault(Class<?> srcInt, Object target, Method method, Object[] args) {
+
         if (invokeDefaultMethod != null) { // java 9+
+
             try {
+
                 return invokeDefaultMethod.invoke(null, target, method, args);
+
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+
                 throw new NbtApiException("Error while trying to invoke a default method for Java 9+. " + target + " "
                         + method + " " + Arrays.toString(args), e);
+
             }
+
         } else {
+
             try {
+
                 Constructor<Lookup> constructor = Lookup.class.getDeclaredConstructor(Class.class);
                 constructor.setAccessible(true);
                 return constructor.newInstance(srcInt).in(srcInt).unreflectSpecial(method, srcInt).bindTo(target)
                         .invokeWithArguments(args);
+
             } catch (Throwable e) {
+
                 throw new NbtApiException("Error while trying to invoke a default method for Java 8. " + target + " "
                         + method + " " + Arrays.toString(args), e);
+
             }
+
         }
+
     }
 
 }

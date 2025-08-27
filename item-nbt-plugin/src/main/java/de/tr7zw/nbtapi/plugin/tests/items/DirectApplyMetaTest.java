@@ -15,22 +15,30 @@ public class DirectApplyMetaTest implements Test {
 
     @Override
     public void test() throws Exception {
-        if(MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
             return; // skip
+
         }
+
         ItemStack baseItem = new ItemStack(Material.STONE);
         NBTItem nbti = new NBTItem(baseItem, true);
         nbti.setString("SomeKey", "SomeValue");
         nbti.modifyMeta(this::modifyMeta);
 
         if (!new NBTItem(baseItem).hasTag("SomeKey") || !"SomeValue".equals(baseItem.getItemMeta().getDisplayName())) {
+
             throw new NbtApiException("The item was not modified correctly! " + NBT.itemStackToNBT(baseItem));
+
         }
 
     }
 
     private void modifyMeta(ReadableNBT nbt, ItemMeta meta) {
+
         meta.setDisplayName(nbt.getString("SomeKey"));
+
     }
 
 }

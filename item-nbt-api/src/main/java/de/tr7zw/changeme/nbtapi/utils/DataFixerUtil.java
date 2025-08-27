@@ -17,7 +17,7 @@ import de.tr7zw.changeme.nbtapi.utils.nmsmappings.ReflectionMethod;
 public class DataFixerUtil {
 
     // these values can be found in DetectedVersion inside mc
-    // Finding pre 1.12.2 values is left as an exercise for the reader, 
+    // Finding pre 1.12.2 values is left as an exercise for the reader,
     // as DetectedVersion is not a thing there
     public static final int VERSION1_12_2 = 1343;
     public static final int VERSION1_16_5 = 2586;
@@ -35,7 +35,9 @@ public class DataFixerUtil {
 
     @SuppressWarnings("unchecked")
     public static Object fixUpRawItemData(Object nbt, int fromVersion, int toVersion)
-            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    {
+
         DataFixer dataFixer = (DataFixer) ReflectionMethod.GET_DATAFIXER.run(null);
         TypeReference itemStackReference = (TypeReference) ClassWrapper.NMS_REFERENCES.getClazz()
                 .getField(MojangToMapping.getMapping().get("net.minecraft.util.datafix.fixes.References#ITEM_STACK"))
@@ -45,13 +47,17 @@ public class DataFixerUtil {
         Dynamic<Object> fixed = dataFixer.update(itemStackReference, new Dynamic<Object>(nbtOps, nbt), fromVersion,
                 toVersion);
         return fixed.getValue();
+
     }
 
     public static ReadWriteNBT fixUpItemData(ReadWriteNBT nbt, int fromVersion, int toVersion)
-            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+            throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+    {
+
         return new NBTContainer(fixUpRawItemData(
                 NBTReflectionUtil.getToCompount(((NBTCompound) nbt).getCompound(), ((NBTCompound) nbt)), fromVersion,
                 toVersion));
+
     }
 
     /**
@@ -64,33 +70,60 @@ public class DataFixerUtil {
      * @return
      */
     public static int getCurrentVersion() {
+
         if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_21_R3)) {
+
             return VERSION1_21_3;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_21_R2)) {
+
             return VERSION1_21_2;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_21_R1)) {
+
             return VERSION1_21;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+
             return VERSION1_20_5;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R3)) {
+
             return VERSION1_20_4;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R1)) {
+
             return VERSION1_20_1;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_19_R3)) {
+
             return VERSION1_19_4;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_19_R1)) {
+
             return VERSION1_19_2;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_18_R1)) {
+
             return VERSION1_18_2;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_17_R1)) {
+
             return VERSION1_17_1;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_16_R1)) {
+
             return VERSION1_16_5;
+
         } else if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_12_R1)) {
+
             return VERSION1_12_2;
+
         }
+
         throw new NbtApiException(
                 "Trying to update data *to* a version before 1.12.2? Something is probably going wrong, contact the plugin author.");
+
     }
 
 }

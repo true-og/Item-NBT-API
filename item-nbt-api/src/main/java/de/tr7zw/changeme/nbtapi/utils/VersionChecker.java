@@ -26,6 +26,7 @@ public class VersionChecker {
     public static boolean hideOk = false;
 
     protected static void checkForUpdates() throws Exception {
+
         URL url = new URL(REQUEST_URL);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.addRequestProperty("User-Agent", USER_AGENT);// Set
@@ -40,11 +41,13 @@ public class VersionChecker {
         // This could be either a JsonArray or JsonObject
         JsonElement element = new JsonParser().parse(reader);
         if (element.isJsonArray()) {
+
             // Is JsonArray
             JsonArray updates = (JsonArray) element;
             JsonObject latest = (JsonObject) updates.get(updates.size() - 1);
             int versionDifference = getVersionDifference(latest.get("name").getAsString());
             if (versionDifference == -1) { // Outdated
+
                 MinecraftVersion.getLogger().log(Level.WARNING,
                         "[NBTAPI] The NBT-API in '" + getPlugin() + "' seems to be outdated!");
                 MinecraftVersion.getLogger().log(Level.WARNING, "[NBTAPI] Current Version: '" + MinecraftVersion.VERSION
@@ -53,19 +56,27 @@ public class VersionChecker {
                         "[NBTAPI] Please update the NBTAPI or the plugin that contains the api(nag the mod author when the newest release has an old version, not the NBTAPI dev)!");
 
             } else if (versionDifference == 0) {
+
                 if (!hideOk)
                     MinecraftVersion.getLogger().log(Level.INFO, "[NBTAPI] The NBT-API seems to be up-to-date!");
+
             } else if (versionDifference == 1) {
+
                 MinecraftVersion.getLogger().log(Level.INFO, "[NBTAPI] The NBT-API in '" + getPlugin()
                         + "' seems to be a future Version, not yet released on Spigot/CurseForge! This is not an error!");
                 MinecraftVersion.getLogger().log(Level.INFO, "[NBTAPI] Current Version: '" + MinecraftVersion.VERSION
                         + "' Newest Version: " + latest.get("name").getAsString() + "'");
+
             }
+
         } else {
+
             // wut?!
             MinecraftVersion.getLogger().log(Level.WARNING,
                     "[NBTAPI] Error when looking for Updates! Got non Json Array: '" + element.toString() + "'");
+
         }
+
     }
 
     // -1 = we are outdated
@@ -73,6 +84,7 @@ public class VersionChecker {
     // 1 = using a future version
     // This method is only able to compare the Format 0.0.0(-SNAPSHOT)
     private static int getVersionDifference(String version) {
+
         String current = MinecraftVersion.VERSION;
         if (current.equals(version))
             return 0;
@@ -105,21 +117,30 @@ public class VersionChecker {
         if (relPatch.contains("-") && curPatch.contains("-"))
             return 0; // Release and cur are Snapshots/alpha/beta
         return 1;
+
     }
 
     protected static String getPlugin() {
+
         ClassLoader classLoader = VersionChecker.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream("plugin.yml");
 
         if (inputStream != null) {
+
             try (InputStreamReader reader = new InputStreamReader(inputStream)) {
+
                 YamlConfiguration pluginYml = YamlConfiguration.loadConfiguration(reader);
                 return pluginYml.getString("name");
+
             } catch (IOException e) {
+
                 // ignored
             }
+
         }
+
         return NBTItem.class.getPackage().getName();
+
     }
 
 }

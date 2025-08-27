@@ -26,7 +26,9 @@ public class NbtApiException extends RuntimeException {
      * 
      */
     public NbtApiException() {
+
         super();
+
     }
 
     /**
@@ -34,35 +36,47 @@ public class NbtApiException extends RuntimeException {
      * @param cause
      */
     public NbtApiException(String message, Throwable cause) {
+
         super(generateMessage(message), cause);
+
     }
 
     /**
      * @param message
      */
     public NbtApiException(String message) {
+
         super(generateMessage(message));
+
     }
 
     /**
      * @param cause
      */
     public NbtApiException(Throwable cause) {
+
         super(generateMessage(cause == null ? null : cause.toString()), cause);
+
     }
 
     private static String generateMessage(String message) {
+
         if (message == null)
             return null;
         if (confirmedBroken == null) {
+
             return "[?][" + MinecraftVersion.getNBTAPIVersion() + "]" + message;
+
         } else if (confirmedBroken == false) {
+
             return "[Selfchecked][" + MinecraftVersion.getNBTAPIVersion() + "]" + message;
+
         }
 
         return "[" + MinecraftVersion.getVersion() + "][" + MinecraftVersion.getNBTAPIVersion()
                 + "]There were errors detected during the server self-check! Please, make sure that NBT-API is up to date. Error message: "
                 + message;
+
     }
 
 }

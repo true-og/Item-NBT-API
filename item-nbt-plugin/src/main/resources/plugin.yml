@@ -1,7 +1,7 @@
 main: de.tr7zw.nbtapi.plugin.NBTAPI
 name: NBTAPI
-version: ${project.version}
+version: '${version}'
 author: tr7zw
 loadbefore: [ItemNBTAPI]
 api-version: 1.13
-folia-supported: true
+folia-supported: false

@@ -28,17 +28,26 @@ public class NBTFile extends NBTCompound implements NBTFileHandle {
      */
     @Deprecated
     public NBTFile(File file) throws IOException {
+
         super(null, null);
         if (file == null) {
+
             throw new NullPointerException("File can't be null!");
+
         }
+
         this.file = file;
         if (file.exists()) {
+
             nbt = NBTReflectionUtil.readNBT(Files.newInputStream(file.toPath()));
+
         } else {
+
             nbt = ObjectCreator.NMS_NBTTAGCOMPOUND.getInstance();
             save();
+
         }
+
     }
 
     /**
@@ -48,12 +57,18 @@ public class NBTFile extends NBTCompound implements NBTFileHandle {
      */
     @Override
     public void save() throws IOException {
+
         try {
+
             getWriteLock().lock();
             saveTo(file, this);
+
         } finally {
+
             getWriteLock().unlock();
+
         }
+
     }
 
     /**
@@ -61,17 +76,23 @@ public class NBTFile extends NBTCompound implements NBTFileHandle {
      */
     @Override
     public File getFile() {
+
         return file;
+
     }
 
     @Override
     public Object getCompound() {
+
         return nbt;
+
     }
 
     @Override
     protected void setCompound(Object compound) {
+
         nbt = compound;
+
     }
 
     /**
@@ -86,9 +107,11 @@ public class NBTFile extends NBTCompound implements NBTFileHandle {
      */
     @Deprecated
     public static NBTCompound readFrom(File file) throws IOException {
+
         if (!file.exists())
             return new NBTContainer();
         return new NBTContainer(NBTReflectionUtil.readNBT(Files.newInputStream(file.toPath())));
+
     }
 
     /**
@@ -103,12 +126,17 @@ public class NBTFile extends NBTCompound implements NBTFileHandle {
      */
     @Deprecated
     public static void saveTo(File file, NBTCompound nbt) throws IOException {
+
         if (!file.exists()) {
+
             file.getParentFile().mkdirs();
             if (!file.createNewFile())
                 throw new IOException("Unable to create file at " + file.getAbsolutePath());
+
         }
+
         nbt.writeCompound(Files.newOutputStream(file.toPath()));
+
     }
 
 }

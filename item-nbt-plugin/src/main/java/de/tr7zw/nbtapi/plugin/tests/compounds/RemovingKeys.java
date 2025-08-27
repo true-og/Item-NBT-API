@@ -30,6 +30,7 @@ public class RemovingKeys implements Test {
 
     @Override
     public void test() throws Exception {
+
         NBTContainer comp = new NBTContainer();
 
         comp.setString(STRING_TEST_KEY, STRING_TEST_VALUE);
@@ -44,7 +45,9 @@ public class RemovingKeys implements Test {
         comp.setByteArray(BYTEARRAY_TEST_KEY, BYTEARRAY_TEST_VALUE);
 
         if (comp.getKeys().size() != 10) {
+
             throw new NbtApiException("Key amount did not match after setting keys!");
+
         }
 
         comp.setString(STRING_TEST_KEY, null);
@@ -59,7 +62,9 @@ public class RemovingKeys implements Test {
         comp.setByteArray(BYTEARRAY_TEST_KEY, null);
 
         if (comp.getKeys().size() != 0) {
+
             throw new NbtApiException("Keys where not removed using the setter with null!");
+
         }
 
     }
