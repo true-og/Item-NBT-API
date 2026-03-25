@@ -1,5 +1,5 @@
 main: de.tr7zw.nbtapi.plugin.NBTAPI
-name: NBTAPI
+name: Item-NBT-API
 version: '${version}'
 author: tr7zw
 loadbefore: [ItemNBTAPI]
