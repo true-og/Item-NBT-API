@@ -247,7 +247,7 @@ project(":item-nbt-plugin") {
         minimize()
         relocate("de.tr7zw.changeme.nbtapi", "de.tr7zw.nbtapi")
         relocate("javassist", "de.tr7zw.nbtinjector.javassist")
-        relocate("de.tr7zw.annotations", "de.tr7zw.nbtapi.utils.annotations")
+        relocate("de.tr7zw.annotations", "de.tr7zw.nbtapi.annotations")
         transform(AppendingTransformer::class.java) { resource = "LICENSE" }
         dependsOn(project(":item-nbt-api").tasks.named("jar"))
     }
