@@ -269,8 +269,10 @@ public enum MinecraftVersion {
 
         }
 
-        if (!disablePackageWarning && !"NBTAPI".equals(VersionChecker.getPlugin())) { // we are not the nbtapi, check
-                                                                                      // for common shading errors
+        if (!disablePackageWarning && !"NBTAPI".equals(VersionChecker.getPlugin())
+                && !"Item-NBT-API".equals(VersionChecker.getPlugin()))
+        { // we are not the nbtapi, check
+          // for common shading errors
 
             if (!"de.tr7zw.nbtapi.utils".equals(reservedPackage)) {
 
