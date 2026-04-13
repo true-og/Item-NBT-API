@@ -69,7 +69,6 @@ public class NBTAPI extends JavaPlugin {
 
         getConfig().options().copyDefaults(true);
         getConfig().addDefault("bStats.enabled", true);
-        getConfig().addDefault("updateCheck.enabled", true);
         getConfig().addDefault("silentquickstart", false);
         saveConfig();
 
@@ -77,17 +76,6 @@ public class NBTAPI extends JavaPlugin {
 
             getLogger().info("bStats disabled");
             MinecraftVersion.disableBStats();
-
-        }
-
-        if (!getConfig().getBoolean("updateCheck.enabled")) {
-
-            getLogger().info("Update check disabled");
-            MinecraftVersion.disableUpdateCheck();
-
-        } else {
-
-            MinecraftVersion.enableUpdateCheck();
 
         }
 

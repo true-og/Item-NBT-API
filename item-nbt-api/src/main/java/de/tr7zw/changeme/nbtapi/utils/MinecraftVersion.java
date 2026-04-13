@@ -33,14 +33,13 @@ public enum MinecraftVersion {
     private static Boolean isFoliaPresent;
     private static boolean bStatsDisabled = false;
     private static boolean disablePackageWarning = false;
-    private static boolean updateCheckDisabled = true;
     /**
      * Logger used by the api
      */
     private static Logger logger = Logger.getLogger("NBTAPI");
 
     // NBT-API Version
-    protected static final String VERSION = "2.14.2";
+    protected static final String VERSION = "2.14.1";
 
     private final int versionId;
     private final boolean mojangMapping;
@@ -229,20 +228,6 @@ public enum MinecraftVersion {
 
         }
 
-        if (hasGsonSupport() && !updateCheckDisabled)
-            new Thread(() -> {
-
-                try {
-
-                    VersionChecker.checkForUpdates();
-
-                } catch (Exception ex) {
-
-                    logger.log(Level.WARNING, "[NBTAPI] Error while checking for updates! Error: " + ex.getMessage());
-
-                }
-
-            }).start();
         // Maven's Relocate is clever and changes strings, too. So we have to use this
         // little "trick" ... :D (from bStats)
         final String defaultPackage = new String(
@@ -397,26 +382,6 @@ public enum MinecraftVersion {
     public static void disableBStats() {
 
         bStatsDisabled = true;
-
-    }
-
-    /**
-     * Disables the update check. Uses Spiget to get the current version and prints
-     * a warning when outdated.
-     */
-    public static void disableUpdateCheck() {
-
-        updateCheckDisabled = true;
-
-    }
-
-    /**
-     * Enables the update check. Uses Spiget to get the current version and prints a
-     * warning when outdated.
-     */
-    public static void enableUpdateCheck() {
-
-        updateCheckDisabled = false;
 
     }
 
