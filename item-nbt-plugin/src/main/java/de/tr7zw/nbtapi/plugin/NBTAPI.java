@@ -67,10 +67,7 @@ public class NBTAPI extends JavaPlugin {
     @Override
     public void onLoad() {
 
-        getConfig().options().copyDefaults(true);
-        getConfig().addDefault("bStats.enabled", true);
-        getConfig().addDefault("silentquickstart", false);
-        saveConfig();
+        saveDefaultConfig();
 
         if (!getConfig().getBoolean("bStats.enabled")) {
 
